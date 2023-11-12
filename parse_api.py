@@ -1,6 +1,5 @@
 import requests
 import json
-import html_to_json
 import pandas as pd
 from websearch import url_to_xml
 
