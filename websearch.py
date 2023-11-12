@@ -18,6 +18,11 @@ def text_from_html(body):
     visible_texts = filter(tag_visible, texts)
     return u" ".join(t.strip() for t in visible_texts)
 
+def url_to_xml(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'lxml')
+    return soup
+
 def findTextfromURL(urlstring): #press report
     # Set the User-Agent header to mimic a web browser
     req = Request(

@@ -2,10 +2,7 @@ import requests
 import json
 import html_to_json
 import pandas as pd
-
-url = 'https://classic.clinicaltrials.gov/api/query/full_studies?expr=experal&min_rnk=1&max_rnk=1&fmt=xml'
-response = requests.get(url)
-data = response.text
+from websearch import url_to_xml
 
 list_of_info = [
     'OrgFullName',
@@ -35,17 +32,22 @@ list_of_info = [
     "OutcomeMeasureTimeFrame",
 ]
 
-lst_info = []
+def xml_to_df(data):
+    lst_info = []
 
-for i in list_of_info:
-    string = i #this is the headers that I need
-    num_of_start = len(string)
-    start_idx = data.find(string)
-    end_idx = data.find("</Field>", start_idx)
-    lst_info.append(data[start_idx + num_of_start:end_idx])
+    for i in list_of_info:
+        string = i #this is the headers that I need
+        num_of_start = len(string) #length of header to get end of string
+        start_idx = data.find(string) #find header
+        end_idx = data.find("</Field>", start_idx) 
+        lst_info.append(data[start_idx + num_of_start:end_idx])
 
-df = pd.DataFrame(columns=['Characteristics', 'Info'])
-df['Characteristics'] = list_of_info
-df['Info'] = lst_info
+    df = pd.DataFrame(columns=['Characteristics', 'Info'])
+    df['Characteristics'] = list_of_info
+    df['Info'] = lst_info
+    return df
 
-print(df)
+#first_url = url_to_xml('https://www.clinicaltrials.gov/study/NCT02365727?cond=Exparel&rank=1')
+#test_df = xml_to_df(first_url)
+#print(test_df)
+#print(first_url)
