@@ -1,0 +1,8 @@
+virtenv/bin
+virtenv/include
+virtenv/lib
+virtenv/share
+virtenv/pyvenv.cfg
+virtenv/__pycache__
+.vscode/
+virtenv/.DS_store
