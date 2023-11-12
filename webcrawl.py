@@ -1,11 +1,9 @@
-from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 
 class WebCrawl():
     def Get_Links(self):
-
         driver = webdriver.Chrome()
 
         # Navigate to the website
@@ -13,7 +11,6 @@ class WebCrawl():
 
         # Find the search box element by ID
         search_box = driver.find_element("id", "advcond")
-
 
         # Input a search term
         search_box.send_keys("Exparel")
@@ -39,4 +36,3 @@ class WebCrawl():
 obj = WebCrawl()
 obj.Get_Links()
 print(obj.filtered_list)
-
