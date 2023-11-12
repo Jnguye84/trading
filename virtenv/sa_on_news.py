@@ -61,19 +61,31 @@ def SA_on_url(url_given):
             #     print(sentence,'\n')
             # if temp[0]['label'] == 'Negative':
             #     print(sentence,'\n')
-    
     return sentiments
 
+
+def get_max_occurrence_ratio(dictionary):
+    # Find the key with the highest occurrence
+    max_key = max(dictionary, key=dictionary.get)
+    
+    # Calculate the ratio of the original value over the total
+    total = sum(dictionary.values())
+    ratio = dictionary[max_key] / total if total != 0 else 0
+    
+    # Create and return a new dictionary with the max key and its ratio
+    result_dict = {max_key: ratio}
+    return result_dict
+
 def sa_across_urls():
-    running_total = {'Positive' : 0, 'Neutral' : 0, 'Negative': 0}
+    running_total = {}
     for url in urls:
+        sa = SA_on_url(url)
         try:
-            sa = SA_on_url(url)
-            print(sa, url)
+            print(get_max_occurrence_ratio(sa), url)
             for key in sa.keys():
                 running_total[key] += sa[key]
         except:
             pass
-    return ('your running total is' + str(running_total))
+    return ('your running total is' + str(get_max_occurrence_ratio(running_total)))
 
 print(sa_across_urls())
