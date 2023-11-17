@@ -1,16 +1,21 @@
-
+#finding SA for first 50 articles in alpha vantage API based on ticker
 from bs4 import BeautifulSoup
 from bs4.element import Comment
 from urllib.request import Request, urlopen
 import nltk
 from bert import sentiment
+import requests
+from transformers import BertTokenizer, BertForSequenceClassification
+from transformers import pipeline
+from nltk.tokenize import sent_tokenize, word_tokenize
+import nltk
 import pandas as pd
-import numpy as np
-# nltk.download('punkt')
+import matplotlib.pyplot as plt
+nltk.download('punkt')
 
 #must classify name and ticker 
 ticker = 'CAVA'
-name = 'Cava'
+name = 'cava'
 
 def tag_visible(element):
             if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -25,20 +30,16 @@ def text_from_html(body):
     visible_texts = filter(tag_visible, texts)
     return u" ".join(t.strip() for t in visible_texts)
 
-import requests
-
 # replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
-url = 'https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=CAVA&apikey=NUITBAL6RYNHAL6G'
+url = 'https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers' +ticker + '&apikey=NUITBAL6RYNHAL6G'
 r = requests.get(url)
 data = r.json()
 urls = []
-# print(data['feed'])
+
 for i in range(len(data['feed'])):
     obj = data['feed'][i]
-    # print(obj['url'])
     urls.append(obj['url'])
-# print(urls)
-# print()
+
 def SA_on_url(url_given):
     sentiments = {'Positive' : 0, 'Neutral' : 0, 'Negative': 0}
     req = Request(
@@ -47,70 +48,59 @@ def SA_on_url(url_given):
     )
     webpage = urlopen(req).read()
     article_str = text_from_html(webpage) #string from the entire webpage
-    # print(article_str)
-    from nltk.tokenize import sent_tokenize, word_tokenize
 
     sentences = sent_tokenize(article_str)
-    # print(sentences)
-    # print(sentiment(sentences))
     for sentence in sentences:
         words = word_tokenize(sentence)
         if len(sentence)< 512 and (ticker in words or name in words):
-            # print(sentence)
             temp = sentiment(sentence)
             temp_label = temp[0]['label']
             sentiments[temp_label] += 1
-            # if temp[0]['label'] == 'Positive':
-            #     print(sentence,'\n')
-            # if temp[0]['label'] == 'Negative':
-            #     print(sentence,'\n')
     return sentiments
-print(sentiment(url[0]))
-pass
+print(SA_on_url(urls[0]))
+print()
 def get_max_occurrence_ratio(dictionary):
     # Find the key with the highest occurrence
     total = sum(dictionary.values())
     result_dict = {}
     for item in dictionary.keys():
-        result_dict[item] = dictionary[item]/total
-    
+        if total != 0:
+            result_dict[item] = float(dictionary[item]/total)
     return result_dict
 
-def extract_num(lst):
-    res = []
-    for i in lst:
-        i = str(i).split(',')[1]
-        i = float(str(i).split(')')[0])
-        res.append(i)
-    return res
 
-def sa_across_urls():
-    running_total = {'Positive':0, 'Neutral':0, 'Negative':0}
-    sa_1 = []
-    sa_2 = []
-    sa_3 = []
-    df = pd.DataFrame()
+def sa_across_urls(): #put into dataframe
+    df_pca = pd.DataFrame(columns=['Positive', 'Neutral', 'Negative', 'URL'])
+    count = 0
     for url in urls:
         sa = SA_on_url(url)
         sa = get_max_occurrence_ratio(sa)
-        sa_1.append(list(sa.items())[0])
-        sa_2.append(list(sa.items())[1])
-        sa_3.append(list(sa.items())[2])
-    sa_1 = extract_num(sa_1)
-    sa_2 = extract_num(sa_2)
-    sa_3 = extract_num(sa_3)
-    df['Positive'] = sa_1
-    df['Neutral'] = sa_2
-    df['Negative'] = sa_3
-    #df = pd.DataFrame(tot, columns=['Positive, Neutral, Negative'])
-    return running_total, df
-    #return ('your running total is' + str(get_max_occurrence_ratio(running_total)))
+        sa['URL'] = url
+        print(sa)
+        df_pca.loc[count] = sa
+        count += 1
+    return (df_pca)
 
-def makeDataFrame():
-    df_pca = pd.DataFrame(columns=['Positive', 'Neutral', 'Negative'])
-    for i in sa_across_urls()[0]:
-        df_pca = df_pca.append(i)
-    df_pca['URL'] = sa_across_urls()[1]
-    return df_pca
+print(sa_across_urls())
 
-print(sa_across_urls()[1])
+# Create a figure and a 3D axis
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# Plot the surface
+for index, row in df_pca.iterrows():
+    x, y, z, label = row['Positive'], row['Neutral'], row['Negative'], row['URL']
+    ax.scatter(x, y, z, label=label)
+
+#x is values[0], y is values[1], z is values[2]
+
+# Set labels
+ax.set_xlabel('Positive')
+ax.set_ylabel('Neutral')
+ax.set_zlabel('Negative')
+
+# Add legend
+ax.legend()
+
+# Show the plot
+plt.show()
