@@ -44,8 +44,10 @@ for count in range (1,2):
     # Find the element by its ID
     element_with_id = driver.find_element('id','APIURL')
     element_url = element_with_id.get_attribute('href')
-
-    print(xml_to_df(element_url))
+    df = xml_to_df(element_url)
+    print(df)
+    for index, row in df.iterrows():
+        print(row['Info'])
 
 
 driver.quit()

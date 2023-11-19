@@ -69,11 +69,11 @@ print(sentiment(url[0]))
 pass
 def get_max_occurrence_ratio(dictionary):
     # Find the key with the highest occurrence
-    total = sum(dictionary.values())
+    total = sum(dictionary.values()) +1
     result_dict = {}
     for item in dictionary.keys():
         result_dict[item] = dictionary[item]/total
-    
+
     return result_dict
 
 def extract_num(lst):
@@ -92,6 +92,7 @@ def sa_across_urls():
     df = pd.DataFrame()
     for url in urls:
         sa = SA_on_url(url)
+        print(sa)
         sa = get_max_occurrence_ratio(sa)
         sa_1.append(list(sa.items())[0])
         sa_2.append(list(sa.items())[1])
@@ -102,15 +103,8 @@ def sa_across_urls():
     df['Positive'] = sa_1
     df['Neutral'] = sa_2
     df['Negative'] = sa_3
-    #df = pd.DataFrame(tot, columns=['Positive, Neutral, Negative'])
     return running_total, df
     #return ('your running total is' + str(get_max_occurrence_ratio(running_total)))
 
-def makeDataFrame():
-    df_pca = pd.DataFrame(columns=['Positive', 'Neutral', 'Negative'])
-    for i in sa_across_urls()[0]:
-        df_pca = df_pca.append(i)
-    df_pca['URL'] = sa_across_urls()[1]
-    return df_pca
-
-print(sa_across_urls()[1])
+df = sa_across_urls()[1]
+print(df)
