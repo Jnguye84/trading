@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from sa_on_news import df, df_list_of_sources
+from kmeans_interp.kmeans_feature_imp import KMeansInterp
 #citation:
 #https://www.youtube.com/watch?v=oiusrJ0btwA&pp=ygUScGNhIGRhdGEgcHJvZmVzc29y
 
@@ -40,6 +41,18 @@ plt.show()
 
 score = silhouette_score(X,y)
 print(score)
+
+kms = KMeansInterp(
+	n_clusters=5,
+	ordered_feature_names=X.columns.tolist(), 
+	feature_importance_method='wcss_min', # or 'unsup2sup'
+).fit(X.values)
+
+# Create a new column to the dataset which will have cluster labels
+labels = kms.labels_
+df['Cluster'] = labels
+
+kms.feature_importances_[1][:10] #
 
 # Get the clusters and categories distributions
 cluster_distrib = df['Cluster'].value_counts()
