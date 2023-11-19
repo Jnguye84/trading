@@ -43,7 +43,7 @@ score = silhouette_score(X,y)
 print(score)
 
 kms = KMeansInterp(
-	n_clusters=5,
+	n_clusters=4,
 	ordered_feature_names=X.columns.tolist(), 
 	feature_importance_method='wcss_min', # or 'unsup2sup'
 ).fit(X.values)
@@ -51,8 +51,6 @@ kms = KMeansInterp(
 # Create a new column to the dataset which will have cluster labels
 labels = kms.labels_
 df['Cluster'] = labels
-
-kms.feature_importances_[1][:10] #
 
 # Get the clusters and categories distributions
 cluster_distrib = df['Cluster'].value_counts()
@@ -62,5 +60,9 @@ fig, axs = plt.subplots(1, 2, sharey=True, figsize=(16,6))
 axs[1].set_title("Cluster Distribution", fontsize='x-large', y=1.02)
 
 sns.barplot(x=cluster_distrib.index, y=cluster_distrib.values, ax=axs[1], color='b')
+
+
+#kms.feature_importances_ the index = position of the most important cluster
+
 
 
