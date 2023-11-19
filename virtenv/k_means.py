@@ -41,4 +41,13 @@ plt.show()
 score = silhouette_score(X,y)
 print(score)
 
+# Get the clusters and categories distributions
+cluster_distrib = df['Cluster'].value_counts()
+
+# Plot both
+fig, axs = plt.subplots(1, 2, sharey=True, figsize=(16,6))
+axs[1].set_title("Cluster Distribution", fontsize='x-large', y=1.02)
+
+sns.barplot(x=cluster_distrib.index, y=cluster_distrib.values, ax=axs[1], color='b')
+
 
