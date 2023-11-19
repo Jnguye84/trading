@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
-from sa_on_news import df
+from sa_on_news import df, df_list_of_sources
 #citation:
 #https://www.youtube.com/watch?v=oiusrJ0btwA&pp=ygUScGNhIGRhdGEgcHJvZmVzc29y
 
@@ -19,6 +19,8 @@ print(y)
 df['cluster'] = y  
 df1 = df[df.cluster==0]
 df2 = df[df.cluster==1]
+df3 = df[df.cluster == 2]
+df4 = df[df.cluster == 3]
 
 kplot = plt.axes(projection='3d')
 xline = np.linspace(0, 1, 1000)
@@ -29,10 +31,14 @@ kplot.plot3D(xline, yline, zline, 'black')
 # Data for three-dimensional scattered points
 kplot.scatter3D(df1.Positive, df1.Neutral, df1.Negative, c='red', label = 'Cluster 1')
 kplot.scatter3D(df2.Positive,df2.Neutral,df2.Negative, c ='green', label = 'Cluster 2')
-plt.scatter(k_means_optimum.cluster_centers_[:,0], k_means_optimum.cluster_centers_[:,1], color = 'indigo', s = 200)
+kplot.scatter3D(df3.Positive,df3.Neutral,df3.Negative, c ='blue', label = 'Cluster 3')
+kplot.scatter3D(df4.Positive,df4.Neutral,df4.Negative, c ='pink', label = 'Cluster 4')
+plt.scatter(k_means_optimum.cluster_centers_[:,0], k_means_optimum.cluster_centers_[:,1], color = 'indigo', s = 200, label=df_list_of_sources)
 plt.legend()
 plt.title("Kmeans")
 plt.show()
 
 score = silhouette_score(X,y)
 print(score)
+
+

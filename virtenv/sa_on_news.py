@@ -90,7 +90,9 @@ def sa_across_urls():
     sa_2 = []
     sa_3 = []
     df = pd.DataFrame()
+    df_list_of_sources = []
     for url in urls:
+        df_list_of_sources.append(url)
         sa = SA_on_url(url)
         print(sa)
         sa = get_max_occurrence_ratio(sa)
@@ -103,8 +105,8 @@ def sa_across_urls():
     df['Positive'] = sa_1
     df['Neutral'] = sa_2
     df['Negative'] = sa_3
-    return running_total, df
-    #return ('your running total is' + str(get_max_occurrence_ratio(running_total)))
+    return df, df_list_of_sources
 
-df = sa_across_urls()[1]
+df = sa_across_urls()[0]
+df_list_of_sources = sa_across_urls()[1]
 print(df)
