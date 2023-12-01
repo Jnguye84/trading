@@ -26,13 +26,13 @@ df4 = df[df.cluster == 3]
 kplot = plt.axes(projection='2d')
 xline = np.linspace(0, 1, 1000)
 yline = np.linspace(0, 1, 1000)
-kplot.plot3D(xline, yline 'black')
+kplot.plot2D(xline, yline, 'black')
 
 # Data for three-dimensional scattered points
-kplot.scatter3D(df1.Positive, df1.Negative, c='red', label = 'Cluster 1')
-kplot.scatter3D(df2.Positive,df2.Negative, c ='green', label = 'Cluster 2')
-kplot.scatter3D(df3.Positive,df3.Negative, c ='blue', label = 'Cluster 3')
-kplot.scatter3D(df4.Positive,df4.Negative, c ='pink', label = 'Cluster 4')
+kplot.scatter2D(df1.Positive, df1.Negative, c='red', label = 'Cluster 1')
+kplot.scatter2D(df2.Positive,df2.Negative, c ='green', label = 'Cluster 2')
+kplot.scatter2D(df3.Positive,df3.Negative, c ='blue', label = 'Cluster 3')
+kplot.scatter2D(df4.Positive,df4.Negative, c ='pink', label = 'Cluster 4')
 plt.scatter(k_means_optimum.cluster_centers_[:,0], k_means_optimum.cluster_centers_[:,1], color = 'indigo', s = 200, label=df_list_of_sources)
 plt.legend()
 plt.title("Kmeans")
@@ -58,7 +58,7 @@ cluster_distrib = df['Cluster'].value_counts()
 fig, axs = plt.subplots(1, 2, sharey=True, figsize=(16,6))
 axs[1].set_title("Cluster Distribution", fontsize='x-large', y=1.02)
 
-sns.barplot(x=cluster_distrib.index, y=cluster_distrib.values, ax=axs[1], color='b')
+# sns.barplot(x=cluster_distrib.index, y=cluster_distrib.values, ax=axs[1], color='b')
 
 
 #kms.feature_importances_ the index = position of the most important cluster

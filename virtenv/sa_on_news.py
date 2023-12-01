@@ -5,6 +5,7 @@ import nltk
 from bert import sentiment
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt 
 # nltk.download('punkt')
 
 #must classify name and ticker 
@@ -104,8 +105,31 @@ def sa_across_urls():
     df['Positive'] = sa_1
     df['Neutral'] = sa_2
     df['Negative'] = sa_3
+    df['URL'] = df_list_of_sources
     return df, df_list_of_sources
 
 df = sa_across_urls()[0]
 df_list_of_sources = sa_across_urls()[1]
 print(df)
+
+
+# Create a figure and a 3D axis
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+# Plot the surface
+for index, row in df.iterrows():
+    x, y,label = row['Positive'], row['Negative'], row['URL']
+    ax.scatter(x, y, label=label)
+
+#x is values[0], y is values[1], z is values[2]
+
+# Set labels
+ax.set_xlabel('Positive')
+ax.set_ylabel('Negative')
+
+# Add legend
+ax.legend()
+
+# Show the plot
+plt.show()
