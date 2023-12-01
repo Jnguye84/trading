@@ -6,16 +6,13 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from sa_on_news import df, df_list_of_sources
-from kmeans_interp.kmeans_feature_imp import KMeansInterp
-#citation:
-#https://www.youtube.com/watch?v=oiusrJ0btwA&pp=ygUScGNhIGRhdGEgcHJvZmVzc29y
+import kmeans
 
-X = df.iloc[:,:].values
+X = df[['Positive', 'Negative', 'URL']]
 num = 4
 
-k_means_optimum = KMeans(n_clusters = num, init = 'k-means++',  random_state=42)
+k_means_optimum = KMeans(n_clusters = num)
 y = k_means_optimum.fit_predict(X)
-print(y)
 
 df['cluster'] = y  
 df1 = df[df.cluster==0]
@@ -23,45 +20,22 @@ df2 = df[df.cluster==1]
 df3 = df[df.cluster == 2]
 df4 = df[df.cluster == 3]
 
-kplot = plt.axes(projection='2d')
-xline = np.linspace(0, 1, 1000)
-yline = np.linspace(0, 1, 1000)
-kplot.plot2D(xline, yline, 'black')
+plt.scatter(df1[:,0] , df1[:,1])
+plt.scatter(df2[:,0] , df2[:,1])
+plt.scatter(df3[:,0] , df3[:,1])
+plt.scatter(df4[:,0] , df4[:,1])
+u_labels = np.unique(cluster)
 
-# Data for three-dimensional scattered points
-kplot.scatter2D(df1.Positive, df1.Negative, c='red', label = 'Cluster 1')
-kplot.scatter2D(df2.Positive,df2.Negative, c ='green', label = 'Cluster 2')
-kplot.scatter2D(df3.Positive,df3.Negative, c ='blue', label = 'Cluster 3')
-kplot.scatter2D(df4.Positive,df4.Negative, c ='pink', label = 'Cluster 4')
-plt.scatter(k_means_optimum.cluster_centers_[:,0], k_means_optimum.cluster_centers_[:,1], color = 'indigo', s = 200, label=df_list_of_sources)
+for i in u_labels:
+    plt.scatter(df[cluster == i , 0] , df[cluster == i , 1] , cluster = i)
+#Getting the Centroids
+centroids = kmeans.cluster_centers_
+u_labels = np.unique(cluster)
+ 
+#plotting the results:
+ 
+for i in u_labels:
+    plt.scatter(df[cluster == i , 0] , df[cluster == i , 1] , label = i)
+plt.scatter(centroids[:,0] , centroids[:,1] , s = 80, color = 'k')
 plt.legend()
-plt.title("Kmeans")
 plt.show()
-
-score = silhouette_score(X,y)
-print(score)
-
-kms = KMeansInterp(
-	n_clusters=4,
-	ordered_feature_names=X.columns.tolist(), 
-	feature_importance_method='wcss_min', # or 'unsup2sup'
-).fit(X.values)
-
-# Create a new column to the dataset which will have cluster labels
-labels = kms.labels_
-df['Cluster'] = labels
-
-# Get the clusters and categories distributions
-cluster_distrib = df['Cluster'].value_counts()
-
-# Plot both
-fig, axs = plt.subplots(1, 2, sharey=True, figsize=(16,6))
-axs[1].set_title("Cluster Distribution", fontsize='x-large', y=1.02)
-
-# sns.barplot(x=cluster_distrib.index, y=cluster_distrib.values, ax=axs[1], color='b')
-
-
-#kms.feature_importances_ the index = position of the most important cluster
-
-
-

@@ -1,7 +1,7 @@
 import requests
 import json
 import pandas as pd
-from websearch import url_to_xml
+from sna import url_to_xml
 
 list_of_info = [
     'OrgFullName',
