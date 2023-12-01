@@ -5,14 +5,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
-from sa_on_news import df, df_list_of_sources
+#from sa_on_news import df, df_list_of_sources
 import kmeans
 
+df = pd.read_csv('data.csv')
 X = df[['Positive', 'Negative', 'URL']]
 num = 4
 
 k_means_optimum = KMeans(n_clusters = num)
-y = k_means_optimum.fit_predict(X)
+y = k_means_optimum.fit_predict(X[['Positive', 'Negative']])
 
 df['cluster'] = y  
 df1 = df[df.cluster==0]
