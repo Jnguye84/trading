@@ -5,6 +5,7 @@ import nltk
 from bert import sentiment
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 # nltk.download('punkt')
 
 #must classify name and ticker 
@@ -108,4 +109,44 @@ def sa_across_urls():
 
 df = sa_across_urls()[0]
 df_list_of_sources = sa_across_urls()[1]
-print(df)
+
+# Create a figure and a 3D axis
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='2d')
+
+# Plot the surface
+for index, row in df.iterrows():
+    x, y, label = row['Positive'], row['Negative'], row['URL']
+    ax.scatter(x, y, label=label)
+
+#x is values[0], y is values[1], z is values[2]
+
+# Set labels
+ax.set_xlabel('Positive')
+ax.set_ylabel('Negative')
+
+# Add legend
+ax.legend()
+
+# Show the plot
+plt.show()
+
+score = silhouette_score(x,y)
+print(score)
+
+kms = KMeansInterp(
+	n_clusters=4,
+	ordered_feature_names=X.columns.tolist(), 
+	feature_importance_method='wcss_min', # or 'unsup2sup'
+).fit(X.values)
+
+# Create a new column to the dataset which will have cluster labels
+labels = kms.labels_
+df['Cluster'] = labels
+
+# Get the clusters and categories distributions
+cluster_distrib = df['Cluster'].value_counts()
+
+# Plot both
+fig, axs = plt.subplots(1, 2, sharey=True, figsize=(16,6))
+axs[1].set_title("Cluster Distribution", fontsize='x-large', y=1.02)
