@@ -23,17 +23,16 @@ df2 = df[df.cluster==1]
 df3 = df[df.cluster == 2]
 df4 = df[df.cluster == 3]
 
-kplot = plt.axes(projection='3d')
+kplot = plt.axes(projection='2d')
 xline = np.linspace(0, 1, 1000)
 yline = np.linspace(0, 1, 1000)
-zline = np.linspace(0, 1, 1000)
-kplot.plot3D(xline, yline, zline, 'black')
+kplot.plot3D(xline, yline 'black')
 
 # Data for three-dimensional scattered points
-kplot.scatter3D(df1.Positive, df1.Neutral, df1.Negative, c='red', label = 'Cluster 1')
-kplot.scatter3D(df2.Positive,df2.Neutral,df2.Negative, c ='green', label = 'Cluster 2')
-kplot.scatter3D(df3.Positive,df3.Neutral,df3.Negative, c ='blue', label = 'Cluster 3')
-kplot.scatter3D(df4.Positive,df4.Neutral,df4.Negative, c ='pink', label = 'Cluster 4')
+kplot.scatter3D(df1.Positive, df1.Negative, c='red', label = 'Cluster 1')
+kplot.scatter3D(df2.Positive,df2.Negative, c ='green', label = 'Cluster 2')
+kplot.scatter3D(df3.Positive,df3.Negative, c ='blue', label = 'Cluster 3')
+kplot.scatter3D(df4.Positive,df4.Negative, c ='pink', label = 'Cluster 4')
 plt.scatter(k_means_optimum.cluster_centers_[:,0], k_means_optimum.cluster_centers_[:,1], color = 'indigo', s = 200, label=df_list_of_sources)
 plt.legend()
 plt.title("Kmeans")
