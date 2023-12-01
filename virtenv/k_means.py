@@ -24,18 +24,13 @@ plt.scatter(df1[:,0] , df1[:,1])
 plt.scatter(df2[:,0] , df2[:,1])
 plt.scatter(df3[:,0] , df3[:,1])
 plt.scatter(df4[:,0] , df4[:,1])
-u_labels = np.unique(cluster)
-
-for i in u_labels:
-    plt.scatter(df[cluster == i , 0] , df[cluster == i , 1] , cluster = i)
-#Getting the Centroids
+u_labels = np.unique(df.cluster)
 centroids = kmeans.cluster_centers_
-u_labels = np.unique(cluster)
  
 #plotting the results:
  
 for i in u_labels:
-    plt.scatter(df[cluster == i , 0] , df[cluster == i , 1] , label = i)
+    plt.scatter(df[df.cluster == i , 0] , df[df.cluster == i , 1] , label = i)
 plt.scatter(centroids[:,0] , centroids[:,1] , s = 80, color = 'k')
 plt.legend()
 plt.show()

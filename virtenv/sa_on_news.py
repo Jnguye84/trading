@@ -111,8 +111,8 @@ def sa_across_urls():
 df = sa_across_urls()[0]
 df_list_of_sources = sa_across_urls()[1]
 print(df)
-
-
+df.to_csv('data.csv', index=True)
+pass
 # Create a figure and a 3D axis
 fig = plt.figure()
 ax = fig.add_subplot(111)
@@ -132,4 +132,4 @@ ax.set_ylabel('Negative')
 ax.legend()
 
 # Show the plot
-plt.show()
+#plt.show()
