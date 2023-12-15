@@ -5,23 +5,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
-from sklearn.preprocessing import StandardScaler
 #from sa_on_news import df, df_list_of_sources
 import kmeans
 import warnings
 warnings.filterwarnings("ignore")
 
 df = pd.read_csv('data.csv')
-df = df[['Positive','Neutral','Negative','URL']]
-lst = []
-X = df[['Positive', 'Negative']]
+X = df[['Positive', 'Negative', 'URL']]
+num = 4
 
-def KCluster(num, X, df):
-    scaler = StandardScaler()
-    scaled_features = scaler.fit_transform(X)
+K
     k_means_optimum = KMeans(n_clusters = num)
-    y = k_means_optimum.fit_predict(scaled_features)
-    cluster_centers = k_means_optimum.cluster_centers_
+    y = k_means_optimum.fit_predict(X[['Positive', 'Negative']])
 
     # Find the most important cluster
     cluster_sizes = np.unique(y, return_counts=True)[1]
