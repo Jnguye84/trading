@@ -10,17 +10,22 @@ from selenium.webdriver.support.ui import Select
 import pandas as pd
 from bs4.element import Comment
 from urllib.request import Request, urlopen
+from sqlalchemy import create_engine
+import time 
 options = Options()
 options.headless = True
 lst = []
-
 url = 'https://classic.clinicaltrials.gov/api/gui/demo/simple_full_study'
 
+#press enter after
+drug = str(input("Name the drug you'd like to find: "))
+number = int(input("Name how many case studies you'd like to find: "))
+
 driver = webdriver.Firefox(options=options)
-
 driver.get(url)
+driver.implicitly_wait(number + 10)
 
-for count in range (1,2):
+for count in range (1,number):
     # Find the textarea element with the specified name attribute
     textarea = driver.find_element("name", "expr")
     min_rank = driver.find_element("id", "min_rnk")
@@ -28,9 +33,11 @@ for count in range (1,2):
 
     # Clear the existing content in the textarea (if any)
     textarea.clear()
+    min_rank.clear()
+    max_rank.clear()
 
     # Enter the word "experal" into the textarea
-    textarea.send_keys('experal')
+    textarea.send_keys(f'{drug}')
     min_rank.send_keys(f"{count}")
     max_rank.send_keys(f"{count}")
 
@@ -49,6 +56,7 @@ for count in range (1,2):
     element_with_id = driver.find_element('id','APIURL')
     element_url = element_with_id.get_attribute('href')
     lst.append(element_url)
+
 driver.quit()
 
 def tag_visible(element):
@@ -64,7 +72,7 @@ list_of_info = [
     "StatusVerifiedDate",
     "OverallStatus",
     "StartDate",
-    "CompletionDate",
+    "PrimaryCompletionDate",
     "BriefSummary",
     "Condition",
     "ArmGroupDescription",
@@ -90,7 +98,7 @@ def xml_to_df(data):
     lst_info = []
     
     req = Request(
-        url=data, #this is where the variable needs to go
+        url=data, 
         headers={'User-Agent': 'Mozilla/5.0'}
     )
     
@@ -98,9 +106,9 @@ def xml_to_df(data):
     webpage = webpage.decode('utf-8')
 
     for i in list_of_info:
-        string = i #this is the headers that I need
-        num_of_start = len(string) #length of header to get end of string
-        start_idx = webpage.find(string) #find header
+        string = i 
+        num_of_start = len(string) + 1 
+        start_idx = webpage.find(string) 
         end_idx = webpage.find("</Field>", start_idx) 
         lst_info.append(webpage[start_idx + num_of_start:end_idx])
 
@@ -109,5 +117,10 @@ def xml_to_df(data):
     df['Info'] = lst_info
     return df
 
+overall_df = pd.DataFrame()
+overall_df['Characteristics'] = list_of_info
+
 for i in lst:
-    print(xml_to_df(i))
+    overall_df[[f'{i}']] = xml_to_df(i)['Info']
+    
+#overall_df.to_excel('exparel_field.xlsx')
