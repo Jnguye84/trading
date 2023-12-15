@@ -10,6 +10,8 @@ from selenium.webdriver.support.ui import Select
 import pandas as pd
 from bs4.element import Comment
 from urllib.request import Request, urlopen
+import time
+
 options = Options()
 options.headless = True
 lst = []
@@ -20,7 +22,7 @@ driver = webdriver.Firefox(options=options)
 
 driver.get(url)
 
-for count in range (1,2):
+for count in range (1,11):
     # Find the textarea element with the specified name attribute
     textarea = driver.find_element("name", "expr")
     min_rank = driver.find_element("id", "min_rnk")
@@ -28,9 +30,11 @@ for count in range (1,2):
 
     # Clear the existing content in the textarea (if any)
     textarea.clear()
+    min_rank.clear()
+    max_rank.clear()
 
     # Enter the word "experal" into the textarea
-    textarea.send_keys('experal')
+    textarea.send_keys('exparel')
     min_rank.send_keys(f"{count}")
     max_rank.send_keys(f"{count}")
 
@@ -45,11 +49,14 @@ for count in range (1,2):
     # Click the button
     button.click()
 
+    time.sleep(10)
     # Find the element by its ID
     element_with_id = driver.find_element('id','APIURL')
     element_url = element_with_id.get_attribute('href')
     lst.append(element_url)
 driver.quit()
+print(lst)
+pass
 
 def tag_visible(element):
         if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -59,6 +66,7 @@ def tag_visible(element):
         return True
 
 list_of_info = [
+    "NCTId", #id to get results
     'OrgFullName',
     "OfficialTitle", #title of study
     "StatusVerifiedDate",
@@ -110,4 +118,8 @@ def xml_to_df(data):
     return df
 
 for i in lst:
-    print(xml_to_df(i))
+    result = xml_to_df(i)
+    print(result)
+    brief_summary = result.loc[6, 'Info']
+    overall_status = result.loc[3,'Info']
+    print(overall_status)
