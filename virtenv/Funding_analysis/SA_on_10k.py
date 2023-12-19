@@ -27,8 +27,8 @@ def textual_content(file):
 
 text_initial = read_txt('/Users/manas/Documents/GitHub/trading/virtenv/Funding_analysis/10kFiles/6955_2023-10-20.txt')
 text_10k = textual_content(text_initial)
-print(text_10k[0:30])
-print(text_10k[-30:])
+# print(text_10k[0:30])
+# print(text_10k[-30:])
 
 
 from bs4 import BeautifulSoup
