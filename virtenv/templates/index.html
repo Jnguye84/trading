@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <form method="POST" enctype="multipart/form-data">
+        {{form.hidden_tag()}}
+        {{form.drug()}}
+        {{form.psize()}}
+        {{form.submit()}}
+        {%if form.validate_on_submit()%}
+        <meta http-equiv="Refresh" content="0; url='drug.html'"/>
+        {% endif %}
+    </form>
+  </body>
+</html>
