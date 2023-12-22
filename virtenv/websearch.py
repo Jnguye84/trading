@@ -1,28 +1,26 @@
-from bs4 import BeautifulSoup
 from bs4.element import Comment
 from urllib.request import Request, urlopen
-import nltk
-import pandas as pd
-# nltk.download('punkt')
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import Select
-import pandas as pd
 from bs4.element import Comment
 from urllib.request import Request, urlopen
 import time
+import csv
+
+drug = str(input("Name the drug you'd like to find with first letter capitalized: "))
+page_cnt = int(input("Name how many case studies you'd like to find: "))
 
 options = Options()
 options.headless = True
 lst = []
-
 url = 'https://classic.clinicaltrials.gov/api/gui/demo/simple_full_study'
 
 driver = webdriver.Firefox(options=options)
-
 driver.get(url)
+driver.implicitly_wait(page_cnt + 10)
 
-for count in range (1,11):
+for count in range (1,page_cnt+1):
     # Find the textarea element with the specified name attribute
     textarea = driver.find_element("name", "expr")
     min_rank = driver.find_element("id", "min_rnk")
@@ -34,7 +32,7 @@ for count in range (1,11):
     max_rank.clear()
 
     # Enter the word "experal" into the textarea
-    textarea.send_keys('exparel')
+    textarea.send_keys(f'{drug}')
     min_rank.send_keys(f"{count}")
     max_rank.send_keys(f"{count}")
 
@@ -49,14 +47,13 @@ for count in range (1,11):
     # Click the button
     button.click()
 
-    time.sleep(10)
+    time.sleep(3)
     # Find the element by its ID
     element_with_id = driver.find_element('id','APIURL')
     element_url = element_with_id.get_attribute('href')
     lst.append(element_url)
+
 driver.quit()
-print(lst)
-pass
 
 def tag_visible(element):
         if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -66,60 +63,39 @@ def tag_visible(element):
         return True
 
 list_of_info = [
-    "NCTId", #id to get results
-    'OrgFullName',
-    "OfficialTitle", #title of study
-    "StatusVerifiedDate",
-    "OverallStatus",
-    "StartDate",
-    "CompletionDate",
-    "BriefSummary",
-    "Condition",
-    "ArmGroupDescription",
-    "ArmGroupInterventionName", #drug
-    "PrimaryOutcomeDescription",
-    "SecondaryOutcomeDescription",
-    "OtherOutcomeMeasure",
-    "OtherOutcomeDescription",
-    "OtherOutcomeTimeFrame",
-    "OtherOutcomeDescription", #length of stay
-    "EligibilityCriteria", #participants
-    "FlowGroupDescription",
-    "FlowGroupDescription",
-    "OutcomeMeasureTitle",
-    "OutcomeMeasureDescription",
-    "OutcomeMeasureTimeFrame",
-    "OutcomeGroupDescription",
-    "OutcomeMeasureDescription",
-    "OutcomeMeasureTimeFrame",
+    "NCTId" #id to get results
 ]
 
 def xml_to_df(data):
     lst_info = []
     
     req = Request(
-        url=data, #this is where the variable needs to go
+        url=data, 
         headers={'User-Agent': 'Mozilla/5.0'}
     )
-    
+
     webpage = urlopen(req).read()
     webpage = webpage.decode('utf-8')
 
     for i in list_of_info:
-        string = i #this is the headers that I need
-        num_of_start = len(string) #length of header to get end of string
-        start_idx = webpage.find(string) #find header
+        string = i 
+        num_of_start = len(string) + 2 
+        start_idx = webpage.find(string) 
         end_idx = webpage.find("</Field>", start_idx) 
         lst_info.append(webpage[start_idx + num_of_start:end_idx])
-
-    df = pd.DataFrame(columns=['Characteristics', 'Info'])
-    df['Characteristics'] = list_of_info
-    df['Info'] = lst_info
-    return df
+    return lst_info
 
 for i in lst:
-    result = xml_to_df(i)
-    print(result)
-    brief_summary = result.loc[6, 'Info']
-    overall_status = result.loc[3,'Info']
-    print(overall_status)
+    list_ids = xml_to_df(i)
+
+csv_file = "virtenv/my_NCTIds.csv"
+
+with open(csv_file, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerows(list_ids)
+
+drug_file = 'virtenv/drugs.csv'
+
+with open(drug_file, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerows(drug)
