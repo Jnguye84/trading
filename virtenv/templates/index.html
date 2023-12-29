@@ -4,11 +4,15 @@
   <body>
     <form method="POST" enctype="multipart/form-data">
         {{form.hidden_tag()}}
+        drug
         {{form.drug()}}
+        Portfolio Size
         {{form.psize()}}
+        Company
+        {{form.company()}}
         {{form.submit()}}
         {%if form.validate_on_submit()%}
-        <meta http-equiv="Refresh" content="0; url='drug.html'"/>
+          <meta http-equiv="Refresh" content="0; url='drug.html'"/>
         {% endif %}
     </form>
   </body>
