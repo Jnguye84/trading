@@ -5,6 +5,7 @@ from rpy2.robjects.conversion import localconverter
 import rpy2.robjects as robjects
 import pandas as pd
 import rpy2.robjects as ro
+import tabulate
 
 r = robjects.r
 r['source']('virtenv/data.R')
@@ -19,5 +20,5 @@ with localconverter(ro.default_converter + pandas2ri.converter):
     results_sentiment = ro.conversion.py2rpy(results_sentiment_r)
     results_sentiment = ro.conversion.rpy2py(results_sentiment)
 
-print(results_sentiment)
-
+print(tabulate(results_sentiment, headers='keys', tablefmt='psql'))
+#[['title', 'description', 'nct_id', 'non_inferiority_desc', 'p_value']]

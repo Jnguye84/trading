@@ -6,11 +6,12 @@ from bert import sentiment
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt 
+import requests
 # nltk.download('punkt')
 
 #must classify name and ticker 
-ticker = 'CAVA'
-name = 'Cava'
+ticker = input('ticker:')
+name = input('name:')
 
 def tag_visible(element):
             if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -25,8 +26,6 @@ def text_from_html(body):
     visible_texts = filter(tag_visible, texts)
     return u" ".join(t.strip() for t in visible_texts)
 
-import requests
-
 # replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
 url = 'https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers=CAVA&apikey=NUITBAL6RYNHAL6G'
 r = requests.get(url)
@@ -38,7 +37,7 @@ for i in range(len(data['feed'])):
     # print(obj['url'])
     urls.append(obj['url'])
 # print(urls)
-# print()
+
 def SA_on_url(url_given):
     sentiments = {'Positive' : 0, 'Neutral' : 0, 'Negative': 0}
     req = Request(
@@ -111,25 +110,5 @@ def sa_across_urls():
 df = sa_across_urls()[0]
 df_list_of_sources = sa_across_urls()[1]
 print(df)
+
 df.to_csv('data.csv', index=True)
-pass
-# Create a figure and a 3D axis
-fig = plt.figure()
-ax = fig.add_subplot(111)
-
-# Plot the surface
-for index, row in df.iterrows():
-    x, y,label = row['Positive'], row['Negative'], row['URL']
-    ax.scatter(x, y, label=label)
-
-#x is values[0], y is values[1], z is values[2]
-
-# Set labels
-ax.set_xlabel('Positive')
-ax.set_ylabel('Negative')
-
-# Add legend
-ax.legend()
-
-# Show the plot
-#plt.show()
