@@ -95,7 +95,7 @@ def results():
             return render_template('participants.html', results_participants=results_participants_df.to_html())
         elif 'Results Reddit' in request.form:
             results_reddit = reddit(drug, company)
-            return render_template('reddit.html', results_reddit=results_reddit)
+            return render_template('reddit.html')
         return render_template('drug.html')
     return render_template('drug.html')
 

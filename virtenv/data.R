@@ -5,7 +5,12 @@
 library(devtools)
 library(rclinicaltrials)
 library(RedditExtractoR)
-
+library(dplyr)
+library(tidytext)
+library(tidyverse)
+library(textdata)
+library(syuzhet)
+library(RColorBrewer)
 
 results_sentiment <- function(drug){ #for extracting numbers and sentiment
   y <- clinicaltrials_download(query = c(paste('cond=',drug,sep=''), 'rslt=With'), count = 10, include_results = TRUE)$study_results$outcome_data
@@ -17,8 +22,69 @@ results_participants <- function(drug){ #to see how many unfinished studies a dr
 
 #REDDIT
 reddit <- function(drug, company){
-  thread_content <- get_thread_content(find_thread_urls(keywords = company, sort_by = "top", period = 'year')$url[1:100])
+  thread_content <- get_thread_content(find_thread_urls(keywords = drug, sort_by = "top", period = 'month')$url[1:100])
   threads <- thread_content$threads$text
   score <- thread_content$threads$score
-  return(threads)
+  data <- data.frame(Threads = threads, Scores = score)
+  sentiment_score_lst <- c()
+
+  for (i in seq_len(nrow(data))) {
+    current_text <- data$Threads[i]
+    tryCatch({
+    text_words <- get_tokens(current_text)
+    sentiment_scores <- get_nrc_sentiment(text_words, lang="english")
+    sentiment_score_lst[[i]] = sentiment_scores
+    }, error = function(e) {
+      sentiment_score_lst[[i]] <- NA 
+      })
+  }
+
+  overall_SA <- list(
+    "anger" = 0,
+    "anticipation" = 0,
+    "disgust" = 0,
+    "fear" = 0,
+    "joy" = 0,
+    "sadness" = 0,
+    "surprise" = 0,
+    "trust" = 0,
+    "negative" = 0,
+    "positive" = 0
+  )
+
+  for (i in seq_len(length(sentiment_score_lst))) {
+    current_table <- sentiment_score_lst[[i]]
+    overall_SA[['anger']] <- overall_SA[['anger']] + sum(current_table$anger, na.rm = TRUE)
+    overall_SA[['anticipation']] <- overall_SA[['anticipation']] + sum(current_table$anticipation, na.rm = TRUE)
+    overall_SA[['disgust']] <- overall_SA[['disgust']] + sum(current_table$disgust, na.rm = TRUE)
+    overall_SA[['fear']] <- overall_SA[['fear']] + sum(current_table$fear, na.rm = TRUE)
+    overall_SA[['joy']] <- overall_SA[['joy']] + sum(current_table$joy, na.rm = TRUE)
+    overall_SA[['sadness']] <- overall_SA[['sadness']] + sum(current_table$sadness, na.rm = TRUE)
+    overall_SA[['surprise']] <- overall_SA[['surprise']] + sum(current_table$surprise, na.rm = TRUE)
+    overall_SA[['trust']] <- overall_SA[['trust']] + sum(current_table$trust, na.rm = TRUE)
+    overall_SA[['negative']] <- overall_SA[['negative']] + sum(current_table$negative, na.rm = TRUE)
+    overall_SA[['positive']] <- overall_SA[['positive']] + sum(current_table$positive, na.rm = TRUE)
+  }
+
+  names_vector <- names(overall_SA)
+  values_vector <- unname(unlist(overall_SA))
+
+  png("virtenv/templates/img/barplot.png")
+
+  barplot(values_vector, 
+  names.arg = names_vector, 
+  space = 0.2,
+  horiz = FALSE,
+  las = 1,
+  cex.names = 0.7,
+  col = brewer.pal(n = 8, name = "Set3"),
+  main = "Reddit Sentiment Analysis",
+  xlab="emotions", ylab = NULL)
+  
+
+  dev.off()
+}
+
+socialnetwork <- function(graph){
+  
 }
