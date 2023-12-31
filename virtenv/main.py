@@ -82,17 +82,15 @@ def home():
 @APP.route('/results', methods=['GET', 'POST'])
 def results():
     if request.method == 'POST':
-        results_participants_df = pd.DataFrame()
-        results_sentiments_df = pd.DataFrame()
         drug = session.get('drug')
         psize = session.get('psize')
         company = session.get('company')
         if 'Results Sentiment' in request.form:
-            results_sentiments_df = results_sentiment(drug)
-            return render_template('sentiments.html', results_sentiment=results_sentiments_df.to_html())
+            results_sentiments = results_sentiment(drug)
+            return render_template('sentiments.html', results_sentiment=results_sentiments)
         elif 'Results Participants' in request.form:
-            results_participants_df = results_participants(drug)
-            return render_template('participants.html', results_participants=results_participants_df.to_html())
+            results_participant = results_participants(drug)
+            return render_template('participants.html', results_participants=results_participant)
         elif 'Results Reddit' in request.form:
             results_reddit = reddit(drug, company)
             return render_template('reddit.html')
