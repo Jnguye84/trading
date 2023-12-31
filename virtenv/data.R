@@ -106,7 +106,7 @@ reddit <- function(drug, company){
   names_vector <- names(overall_SA)
   values_vector <- unname(unlist(overall_SA))
 
-  png("virtenv/templates/img/barplot.png")
+  png("virtenv/static/img/barplot.png")
 
   barplot(values_vector, 
   names.arg = names_vector, 
