@@ -47,20 +47,30 @@ def results_participants(drug):
         results_participants = ro.conversion.rpy2py(results_participants)
     return results_participants
 
-def reddit(drug, company):
+def reddit():
     with conversion.localconverter(default_converter):
         r = robjects.r
         r['source']('virtenv/data.R')  
     with localconverter(ro.default_converter + pandas2ri.converter):
-        drug_r = ro.conversion.py2rpy(drug)
-        company_r = ro.conversion.py2rpy(company)
     results_reddit = robjects.r['reddit']
-    results_reddit_r = results_reddit(drug_r, company_r)
+    results_reddit_r = results_reddit()
 
     with localconverter(ro.default_converter + pandas2ri.converter):
         results_reddit = ro.conversion.py2rpy(results_reddit_r)
         results_reddit = ro.conversion.rpy2py(results_reddit)
     return results_reddit 
+
+def reddit_csv():
+    with conversion.localconverter(default_converter):
+        r = robjects.r
+        r['source']('virtenv/reddit.R')  
+    with localconverter(ro.default_converter + pandas2ri.converter):
+        results_reddit_csv = robjects.r['reddit_csv']
+        results_reddit_r = results_reddit_csv(drug, company)
+    with localconverter(ro.default_converter + pandas2ri.converter):
+        results_reddit = ro.conversion.py2rpy(results_reddit_r)
+        results_reddit = ro.conversion.rpy2py(results_reddit)
+    return 'Finished Running Monthly Reddit CSV File!'
 
 #subprocess.run(['python', 'k_means.py'])
 
@@ -92,8 +102,10 @@ def results():
             results_participant = results_participants(drug)
             return render_template('participants.html', results_participants=results_participant)
         elif 'Results Reddit' in request.form:
-            results_reddit = reddit(drug, company)
+            results_reddit = reddit()
             return render_template('reddit.html')
+        elif 'Results K-Means Fin Bert' in request.form:
+            kmeans = kmeans(drug, company)
         return render_template('drug.html')
     return render_template('drug.html')
 

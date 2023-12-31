@@ -58,11 +58,8 @@ results_participants <- function(drug){ #to see how many unfinished studies a dr
 }
 
 #REDDIT
-reddit <- function(drug, company){
-  thread_content <- get_thread_content(find_thread_urls(keywords = drug, sort_by = "top", period = 'month')$url[1:100])
-  threads <- thread_content$threads$text
-  score <- thread_content$threads$score
-  data <- data.frame(Threads = threads, Scores = score)
+reddit <- function(){
+  data <- read.csv('virtenv/reddit_data.csv')
   sentiment_score_lst <- c()
 
   for (i in seq_len(nrow(data))) {
@@ -116,7 +113,7 @@ reddit <- function(drug, company){
   cex.names = 0.7,
   col = brewer.pal(n = 8, name = "Set3"),
   main = "Reddit Sentiment Analysis",
-  xlab="emotions", ylab = NULL)
+  xlab="Emotions", ylab = NULL)
   
 
   dev.off()
