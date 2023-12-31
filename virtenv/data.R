@@ -17,7 +17,21 @@ results_sentiment <- function(drug){ #for extracting numbers and sentiment
 }
 
 results_participants <- function(drug){ #to see how many unfinished studies a drug has, how many had unsuccessful participants
-  y <- clinicaltrials_download(query = c(paste('cond=',drug,sep=''), 'rslt=With'), count = 10, include_results = TRUE)$study_results$participant_flow
+  data <- clinicaltrials_download(query = c(paste('cond=',drug,sep=''), 'rslt=With'), count = 10, include_results = TRUE)$study_results$participant_flow
+  
+  sum_completed <- 0
+  sum_not_completed <- 0
+
+  for (unique_id in unique(data$nct_id)) {
+
+    subset_data <- data[data$nct_id == unique_id, ]
+
+    sum_completed <- sum_completed + sum(as.numeric(subset_data$count)[subset_data$status == "COMPLETED"])
+    sum_not_completed <- sum_not_completed + sum(as.numeric(subset_data$count)[subset_data$status == "NOT COMPLETED"])
+  }
+
+  sum_status <- c(sum_completed, sum_not_completed)
+  return(sum_status)
 }
 
 #REDDIT
@@ -86,5 +100,5 @@ reddit <- function(drug, company){
 }
 
 socialnetwork <- function(graph){
-  
+
 }
