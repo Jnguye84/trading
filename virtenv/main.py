@@ -52,8 +52,8 @@ def reddit():
         r = robjects.r
         r['source']('virtenv/data.R')  
     with localconverter(ro.default_converter + pandas2ri.converter):
-    results_reddit = robjects.r['reddit']
-    results_reddit_r = results_reddit()
+        results_reddit = robjects.r['reddit']
+        results_reddit_r = results_reddit()
 
     with localconverter(ro.default_converter + pandas2ri.converter):
         results_reddit = ro.conversion.py2rpy(results_reddit_r)
