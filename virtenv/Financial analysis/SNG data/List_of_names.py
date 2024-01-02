@@ -2,6 +2,7 @@
 import yfinance as yf
 import time
 import os
+import pandas as pd
 #prints the company's longname
 def get_collabs(ticker):
     def get_company_name(ticker):
@@ -24,27 +25,29 @@ def get_collabs(ticker):
             print("name Error")
             exit()
         Companyname = name.split()[0].strip(',')
-        index_file = open("virtenv/Financial analysis/company.idx").readlines()
+        index_file = open("/Users/manas/Documents/GitHub/trading/virtenv/Financial analysis/company.idx").readlines()
         find_list = []
         item = 0
         line = 0
+        try:
+            while item < 1:
+                i = index_file[line]
+                if i.find(Companyname) != -1:
+                    # print(i)
+                    loc1 = i.find('10-Q')
+                    loc2 = i.find("NT 10-Q") 
+                    loc3 = i.find("10-Q/A")
 
-        while item < 1:
-            i = index_file[line]
-            if i.find(Companyname) != -1:
-                # print(i)
-                loc1 = i.find('10-Q')
-                loc2 = i.find("NT 10-Q") 
-                loc3 = i.find("10-Q/A")
-
-                #We strictly keep 10-K files, not NT 10-K or 10-K/A
-                if (loc2 == -1) and (loc1 != -1) and (loc3 == -1):
-                    find_list.append(i)
-                item +=1
-                line += 1
-            else:
-                # print("no")
-                line+=1
+                    #We strictly keep 10-K files, not NT 10-K or 10-K/A
+                    if (loc2 == -1) and (loc1 != -1) and (loc3 == -1):
+                        find_list.append(i)
+                    item +=1
+                    line += 1
+                else:
+                    # print("no")
+                    line+=1
+        except IndexError:
+            return None
 
 
         # We will keep the information from this line in a list called find_list
@@ -54,6 +57,7 @@ def get_collabs(ticker):
         # Company_No (this will be  the names of our files when we download them)
         ReportList = []
         Company_No = []
+        filename = None
         for i in find_list:
             split_i = i.split()
             ReportList.append("https://www.sec.gov/Archives/" + split_i[-1])
@@ -63,7 +67,7 @@ def get_collabs(ticker):
 
         #saving File
         import os
-        os.chdir("virtenv/Financial analysis/SNG data")
+        os.chdir("/Users/manas/Documents/GitHub/trading/virtenv/Financial analysis/SNG data")
 
         def createfile(filename, content):
             name= filename + ".txt"  # Here we define the name of the file
@@ -96,13 +100,16 @@ def get_collabs(ticker):
 
         print(unable_request) # Check to see if any of the downloads failed
         return filename
+    
     # print(get_10Q("AbbVie"))
     stock_tenQ_name = get_10Q(entity_name)
     #searches the 10-Q for collaborators 
     
-    time.sleep(5) #to allow download and indexing
+    time.sleep(1) #to allow download and indexing
 
     def find_collab(tenQ_Name):
+        if tenQ_Name is None:
+            return None
         """
         should do basically the same thing as the sentiment analysis but look for things following "collaboration with"
         """
@@ -169,14 +176,23 @@ def get_collabs(ticker):
 # print(get_collabs("PCRX"))
 
 import pandas as pd
-
+import csv
 def main():
     df = pd.read_csv("virtenv/biotechTemp.csv")
     stocks = df['ticker'].to_list()
-    dict = {}
+    collabs = []
     for stock in stocks:
         colabs = get_collabs(stock)
-        dict[stock] = colabs
-    return dict
+        collabs.append([stock, colabs])
+        print(collabs)
+    
+    with open('output.csv', mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(collabs)
+    # transposed_dict = {k: pd.Series(v) for k, v in dict.items()}
 
+    # df = pd.DataFrame(transposed_dict)
+
+    # df.to_csv('output.csv', index=False)
+    return collabs
 main()
