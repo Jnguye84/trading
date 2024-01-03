@@ -51,10 +51,6 @@ def reddit():
     with localconverter(ro.default_converter + pandas2ri.converter):
         results_reddit = robjects.r['reddit']
         results_reddit_r = results_reddit()
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
     with localconverter(ro.default_converter + pandas2ri.converter):
         results_reddit = ro.conversion.py2rpy(results_reddit_r)
         results_reddit = ro.conversion.rpy2py(results_reddit)
