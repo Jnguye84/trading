@@ -14,6 +14,9 @@ with open(input_file, mode='r') as infile, open(output_file, mode='w', newline='
         for i in range(len(items)):
             if 'Inc.' in items[i].split():
                 print(items[i-1].strip("'"))
-                companies.append(items[i-1].strip("'"))
-    outfile.write(str(companies))    
+                companies.append(items[i-1].strip("'&#"))
+            if 'corporation' in items[i].lower().split():
+                print(items[i-1].strip("'"))
+                companies.append(items[i-1].strip("'&#"))
+    outfile.write(str(companies))
 
