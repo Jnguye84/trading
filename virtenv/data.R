@@ -59,7 +59,7 @@ results_participants <- function(drug){ #to see how many unfinished studies a dr
 
 #REDDIT
 reddit <- function(){
-  data <- read.csv('virtenv/reddit_data.csv')
+  data <- read.csv('/Users/jessicanguyen/Documents/GitHub/trading/virtenv/reddit_data.csv')
   sentiment_score_lst <- c()
 
   for (i in seq_len(nrow(data))) {
@@ -103,7 +103,7 @@ reddit <- function(){
   names_vector <- names(overall_SA)
   values_vector <- unname(unlist(overall_SA))
 
-  png("virtenv/static/img/barplot.png")
+  png("/Users/jessicanguyen/Documents/GitHub/trading/virtenv/static/img/barplot.png")
 
   barplot(values_vector, 
   names.arg = names_vector, 

@@ -8,7 +8,7 @@ reddit_csv <- function(drug, company){
     threads <- thread_content$threads$text
     score <- thread_content$threads$score
     data <- data.frame(Threads = threads, Scores = score)
-    write.csv(data, 'virtenv/reddit_data.csv')
+    write.csv(data, '/Users/jessicanguyen/Documents/GitHub/trading/virtenv/reddit_data.csv')
     } else {
     }
 }

@@ -1,5 +1,8 @@
 library(tidyverse)
 data <- read.csv('/Users/jessicanguyen/Documents/GitHub/trading/outputTemp.csv', header=FALSE)
+extra_companies <- readLines('companyNames.txt', warn = FALSE)
+extra_companies <- lapply(extra_companies, function(line) strsplit(line, ",")[[1]])
+extra_companies <- gsub("'", "", extra_companies)
 
 split_data <- strsplit(as.character(data), "\\}", fixed=TRUE)
 
