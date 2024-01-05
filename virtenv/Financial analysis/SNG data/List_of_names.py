@@ -160,7 +160,7 @@ def get_collabs(ticker):
         # print(clean_data)
         for item in clean_data:
             ratio = fuzz.partial_ratio(target, item)
-            if 50 <= ratio <= 90:
+            if 65 <= ratio <= 90:
                 doc = nlp(item)
                 for ent in doc.ents:
                     if ent.label_ == 'ORG':  # Check for organization entities
@@ -181,18 +181,14 @@ def main():
     df = pd.read_csv("virtenv/biotechTemp.csv")
     stocks = df['ticker'].to_list()
     collabs = []
-    for stock in stocks:
+    for stock in stocks[:10]:
         colabs = get_collabs(stock)
         collabs.append([stock, colabs])
         print(collabs)
     
-    with open('output.csv', mode='w', newline='') as file:
+    with open('outputTemp.csv', mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerows(collabs)
-    # transposed_dict = {k: pd.Series(v) for k, v in dict.items()}
-
-    # df = pd.DataFrame(transposed_dict)
-
-    # df.to_csv('output.csv', index=False)
+    
     return collabs
 main()
