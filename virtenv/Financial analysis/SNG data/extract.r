@@ -1,5 +1,5 @@
 library(tidyverse)
-data <- read.csv('/Users/jessicanguyen/Documents/GitHub/trading/virtenv/Financial analysis/SNG data/output.csv', header=FALSE)
+data <- read.csv('/Users/jessicanguyen/Documents/GitHub/trading/outputTemp.csv', header=FALSE)
 
 split_data <- strsplit(as.character(data), "\\}", fixed=TRUE)
 
