@@ -1,24 +1,19 @@
 import csv
 
 # Input and output file paths
-input_file = '/Users/manas/Documents/GitHub/trading/virtenv/Financial analysis/SNG data/output.csv'
-output_file = 'outputTemp.csv'
+input_file = '/Users/manas/Documents/GitHub/trading/outputTemp.csv'
+output_file = 'companyNames.txt'
 
 with open(input_file, mode='r') as infile, open(output_file, mode='w', newline='') as outfile:
     reader = csv.reader(infile)
-    writer = csv.writer(outfile)
-    
+    companies = []
     for row in reader:
         # Assuming the dictionary column is the second column (index 1)
         dictionary_str = row[1].strip()
+        items = dictionary_str.strip('{}').split(', ')
+        for i in range(len(items)):
+            if 'Inc.' in items[i].split():
+                print(items[i-1].strip("'"))
+                companies.append(items[i-1].strip("'"))
+    outfile.write(str(companies))    
 
-        # Check if the dictionary is empty
-        if dictionary_str == '':
-            row[1] = "'{}'"  # Replace empty dictionary with '{}' within quotes
-        else:
-            # Keeping the original line if the dictionary is not empty
-            pass
-
-        writer.writerow(row)
-
-print(f"Processing complete. Result written to {output_file}")
