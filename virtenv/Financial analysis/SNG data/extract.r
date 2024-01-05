@@ -27,6 +27,6 @@ for (i in seq_along(companies_list)) {
   }
 }
 
-cleaned_list <- lapply(companies_list, function(sublist) sublist[!is.na(sublist)])
-
+cleaned_list <- lapply(companies_list[[1]], function(sublist) sublist[!is.na(sublist)])
+cleaned_list <- cleaned_list[-length(cleaned_list)]
 sna <- data.frame(Tickers= as.character(tickers), Relationships = as.character(cleaned_list))
