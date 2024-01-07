@@ -37,7 +37,8 @@ for (i in seq_along(companies_list)) {
 cleaned_list <- lapply(companies_list[[1]], function(sublist) sublist[!is.na(sublist)])
 cleaned_list <- cleaned_list[-length(cleaned_list)]
 cleaned_list <- lapply(cleaned_list, function(x) if (length(x) == 0) "" else x)
+cleaned_list <- lapply(cleaned_list, function(x) as.list(x))
 
 sna <- data.frame(Tickers= as.character(tickers), Relationships = as.character(cleaned_list))
-sna <- unnest(sna, cols = Relationships)
-df_unnested <- separate(sna, col = Relationships, into = c("col1", "col2", "col3", "col4"), sep = ",")
+sna$Relationships <- gsub("[^[:alnum:], ]", "", sna$Relationships)
+sna <- separate(sna, col = Relationships, into = paste0("col", 1:14), sep = ",")
