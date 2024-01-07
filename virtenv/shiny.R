@@ -33,12 +33,12 @@ server <- function(input, output) {
     psize <- input$psize
     company <- input$company
 
-    source("/Users/jessicanguyen/Documents/GitHub/trading/virtenv/data.R")
+    source("~/Documents/GitHub/trading/virtenv/data.R")
 
     # Assuming you have R functions for sentiment, participants, and Reddit
     sentiment_results <- results_sentiment(drug)
-    participants_results <- results_participants(drug)
-    reddit_results <- reddit()
+    #participants_results <- results_participants(drug)
+    #reddit_results <- reddit()
 
     output$sentiment <- renderText({
       # Display sentiment results
@@ -50,12 +50,15 @@ server <- function(input, output) {
       participants_results
     })
 
-    output$reddit <- renderText({
-      # Display Reddit results
-      img(src="/Users/jessicanguyen/Documents/GitHub/trading/virtenv/static/img/barplot.png")
-    })
+    output$reddit <- renderImage({
+      return(
+        list(src = "~/Documents/GitHub/trading/virtenv/static/img/barplot.png",
+             contentType = "image/png",
+             width = "100%", height = "auto")
+      )
+    }, deleteFile = FALSE)
   })
 }
 
 shinyApp(ui, server)
-#shiny::runApp("/Users/jessicanguyen/Documents/GitHub/trading/virtenv/shiny.R")
+#shiny::runApp("virtenv/shiny.R")
