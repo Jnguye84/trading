@@ -1,7 +1,10 @@
 library(tidyverse)
 library(tidyr)
 library(purrr)
-data <- read.csv("/Users/jessicanguyen/Documents/GitHub/trading/outputTemp.csv", header=FALSE)
+library(igraph)
+input <- 'PCRX'
+
+data <- read.csv("~/Documents/GitHub/trading/outputTemp.csv", header=FALSE)
 extra_companies <- readLines("companyNames.txt", warn = FALSE)
 extra_companies <- sapply(extra_companies, function(line) strsplit(line, ","))
 extra_companies <- sapply(extra_companies, function(x) trimws(gsub("\'", "", x)))
@@ -42,3 +45,22 @@ cleaned_list <- lapply(cleaned_list, function(x) as.list(x))
 sna <- data.frame(Tickers= as.character(tickers), Relationships = as.character(cleaned_list))
 sna$Relationships <- gsub("[^[:alnum:], ]", "", sna$Relationships)
 sna <- separate(sna, col = Relationships, into = paste0("col", 1:14), sep = ",")
+#made dataframe
+
+long_df <- pivot_longer(sna, cols = -Tickers, names_to = "To", values_to = "From")
+#make wide to long format
+
+social_network <- graph_from_data_frame(long_df, directed = FALSE)
+
+# Plot the social network graph
+#plot(social_network, main = "Social Network Graph")
+
+# Calculate betweenness centrality
+betweenness_values <- betweenness(social_network)
+
+betweenness_values <- betweenness_values[order(-betweenness_values)]
+
+betweenness_dict <- setNames(as.list(betweenness_values), names(betweenness_values))#make dictionary
+
+print(betweenness_dict[input])
+percentile <- ecdf(data)(value) * 100

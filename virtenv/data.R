@@ -11,6 +11,8 @@ library(tidyverse)
 library(textdata)
 library(syuzhet)
 library(RColorBrewer)
+library(purrr)
+library(igraph)
 
 results_sentiment <- function(drug){ #for extracting numbers and sentiment
   data <- clinicaltrials_download(query = c(paste('cond=',drug,sep=''), 'rslt=With'), count = 10, include_results = TRUE)$study_results$outcome_data
@@ -36,7 +38,8 @@ results_sentiment <- function(drug){ #for extracting numbers and sentiment
   median_not_superiority  <- unname(unlist(median_not_superiority [sapply(median_not_superiority , is.numeric)], use.names = FALSE, recursive = FALSE))
   median_not_superiority  <- median(median_not_superiority , na.rm = TRUE)
   median_list <- c(median_superiority, median_not_superiority)
-  return(median_list)
+  #return(median_list)
+  return(data)
 }
 
 results_participants <- function(drug){ #to see how many unfinished studies a drug has, how many had unsuccessful participants
@@ -59,7 +62,10 @@ results_participants <- function(drug){ #to see how many unfinished studies a dr
 
 #REDDIT
 reddit <- function(){
-  data <- read.csv('/Users/jessicanguyen/Documents/GitHub/trading/virtenv/reddit_data.csv')
+  thread_content <- get_thread_content(find_thread_urls(keywords = drug, sort_by = "top", period = 'month')$url[1:300])
+  threads <- thread_content$threads$text
+  score <- thread_content$threads$score
+  data <- data.frame(Threads = threads, Scores = score)
   sentiment_score_lst <- c()
 
   for (i in seq_len(nrow(data))) {
@@ -103,7 +109,7 @@ reddit <- function(){
   names_vector <- names(overall_SA)
   values_vector <- unname(unlist(overall_SA))
 
-  png("/Users/jessicanguyen/Documents/GitHub/trading/virtenv/static/img/barplot.png")
+  png("~/Documents/GitHub/trading/virtenv/static/img/barplot.png")
 
   barplot(values_vector, 
   names.arg = names_vector, 
@@ -119,6 +125,7 @@ reddit <- function(){
   dev.off()
 }
 
-socialnetwork <- function(graph){
+socialnetwork <- function(input){
 
 }
+
