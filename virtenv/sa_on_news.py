@@ -10,8 +10,8 @@ import requests
 # nltk.download('punkt')
 
 #must classify name and ticker 
-ticker = input('ticker:')
-name = input('name:')
+# ticker = input('ticker:')
+# name = input('name:')
 def main(ticker, name):
     def tag_visible(element):
                 if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -109,7 +109,7 @@ def main(ticker, name):
 
     df = sa_across_urls()[0]
     df_list_of_sources = sa_across_urls()[1]
-    print(df)
+    # print(df)
     return df
 # df.to_csv('data.csv', index=True)
-main(ticker,name)
+# main(ticker,name)

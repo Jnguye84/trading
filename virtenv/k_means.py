@@ -8,10 +8,17 @@ from sklearn.metrics import silhouette_score
 #from sa_on_news import df, df_list_of_sources
 import kmeans
 import warnings
+
+from sa_on_news import main
+
+ticker = input('ticker:')
+name = input('name:')
+
 warnings.filterwarnings("ignore")
 lst = []
 
-df = pd.read_csv('data.csv')
+df = main(ticker, name)
+
 X = df[['Positive', 'Negative']]
 
 k_means_optimum = KMeans(n_clusters = 4)
