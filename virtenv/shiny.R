@@ -1,4 +1,5 @@
 library(shiny)
+library(shinydashboard)
 
 ui <- fluidPage(
   titlePanel("Drug Analysis"),
@@ -36,9 +37,9 @@ server <- function(input, output) {
     source("~/Documents/GitHub/trading/virtenv/data.R")
 
     # Assuming you have R functions for sentiment, participants, and Reddit
-    sentiment_results <- results_sentiment(drug)
+    #sentiment_results <- results_sentiment(drug)
     #participants_results <- results_participants(drug)
-    #reddit_results <- reddit()
+    reddit_results <- reddit()
 
     output$sentiment <- renderText({
       # Display sentiment results
