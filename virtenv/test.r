@@ -1,8 +1,4 @@
-library(tidyverse)
-library(tidyr)
-library(purrr)
-library(igraph)
-
+input <- 'PCRX'
 data <- read.csv("~/Documents/GitHub/trading/outputTemp.csv", header=FALSE)
 extra_companies <- readLines("companyNames.txt", warn = FALSE)
 extra_companies <- sapply(extra_companies, function(line) strsplit(line, ","))
@@ -47,12 +43,11 @@ sna <- separate(sna, col = Relationships, into = paste0("col", 1:14), sep = ",")
 #made dataframe
 
 long_df <- pivot_longer(sna, cols = -Tickers, names_to = "To", values_to = "From")
-#make wide to long format
-
+#make wide to long form
+#long_df <- subset(long_df, Tickers == input)
+long_df <- subset(long_df, select = -To)
+long_df <- subset(long_df, From != "NA")
 social_network <- graph_from_data_frame(long_df, directed = FALSE)
-
-# Plot the social network graph
-#plot(social_network, main = "Social Network Graph")
 
 # Calculate betweenness centrality
 betweenness_values <- betweenness(social_network)
