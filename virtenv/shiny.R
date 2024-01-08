@@ -43,7 +43,7 @@ server <- function(input, output) {
     participants_results <- results_participants(drug)
     reddit_results <- reddit(drug)
     social_network <- social_network(company)
-    social_network_graph <- social_network_graph()
+    social_network_graph <- social_network_graph(company)
 
     output$sentiment <- renderText({
       # Display sentiment results
@@ -62,6 +62,16 @@ server <- function(input, output) {
              width = "100%", height = "auto")
       )
     }, deleteFile = FALSE)
+
+    output$socialnetwork <- renderText({
+      # Display social network betweenness scores
+      social_network
+    })
+
+    output$socialnetworkgraph <- renderGraph({
+    #display social network graph
+    })
+
   })
 }
 
