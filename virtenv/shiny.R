@@ -17,7 +17,8 @@ ui <- fluidPage(
         tabPanel("Results Sentiment", textOutput("sentiment")),
         tabPanel("Results Participants", textOutput("participants")),
         tabPanel("Results Reddit", textOutput("reddit")),
-        tabPanel("Results Social Network", textOutput("socialnetwork"))
+        tabPanel("Results Social Network", textOutput("socialnetwork")),
+        tabPanel("Results Social Network Graph", textOutput("socialnetworkgraph"))
         
       )
     )
@@ -40,9 +41,9 @@ server <- function(input, output) {
     # Assuming you have R functions for sentiment, participants, and Reddit
     sentiment_results <- results_sentiment(drug)
     participants_results <- results_participants(drug)
-    reddit_results <- reddit()
-    social_network <- social_network()
-
+    reddit_results <- reddit(drug)
+    social_network <- social_network(company)
+    social_network_graph <- social_network_graph()
 
     output$sentiment <- renderText({
       # Display sentiment results

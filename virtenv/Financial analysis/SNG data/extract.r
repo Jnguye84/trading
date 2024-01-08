@@ -2,7 +2,6 @@ library(tidyverse)
 library(tidyr)
 library(purrr)
 library(igraph)
-input <- 'PCRX'
 
 data <- read.csv("~/Documents/GitHub/trading/outputTemp.csv", header=FALSE)
 extra_companies <- readLines("companyNames.txt", warn = FALSE)
@@ -62,5 +61,5 @@ betweenness_values <- betweenness_values[order(-betweenness_values)]
 
 betweenness_dict <- setNames(as.list(betweenness_values), names(betweenness_values))#make dictionary
 
-print(betweenness_dict[input])
-percentile <- ecdf(data)(value) * 100
+percentile <- ecdf(betweenness_values)(betweenness_dict[input]) * 100
+print(percentile)
