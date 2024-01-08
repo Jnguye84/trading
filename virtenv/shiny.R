@@ -16,7 +16,7 @@ ui <- fluidPage(
         tabPanel("Home", textOutput("home")),
         tabPanel("Results Sentiment", textOutput("sentiment")),
         tabPanel("Results Participants", textOutput("participants")),
-        tabPanel("Results Reddit", textOutput("reddit"))
+        tabPanel("Results Reddit", textOutput("reddit")),
         tabPanel("Results Social Network", textOutput("socialnetwork"))
         
       )

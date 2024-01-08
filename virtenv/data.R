@@ -38,8 +38,7 @@ results_sentiment <- function(drug){ #for extracting numbers and sentiment
   median_not_superiority  <- unname(unlist(median_not_superiority [sapply(median_not_superiority , is.numeric)], use.names = FALSE, recursive = FALSE))
   median_not_superiority  <- median(median_not_superiority , na.rm = TRUE)
   median_list <- c(median_superiority, median_not_superiority)
-  #return(median_list)
-  return(data)
+  return(median_list)
 }
 
 results_participants <- function(drug){ #to see how many unfinished studies a drug has, how many had unsuccessful participants
